@@ -4,12 +4,12 @@ using SearchService.Models;
 
 namespace SearchService.Services;
 
-public class AuctionServiceHttpClient
+public class AuctionSvcHttpClient
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
 
-    public AuctionServiceHttpClient(HttpClient httpClient, IConfiguration config)
+    public AuctionSvcHttpClient(HttpClient httpClient, IConfiguration config)
     {
         _httpClient = httpClient;
         _config = config;

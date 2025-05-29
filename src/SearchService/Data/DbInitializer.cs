@@ -24,7 +24,7 @@ public class DbInitializer
 
         using var scope = app.Services.CreateScope();
 
-        var httpClient = scope.ServiceProvider.GetRequiredService<AuctionServiceHttpClient>();
+        var httpClient = scope.ServiceProvider.GetRequiredService<AuctionSvcHttpClient>();
 
         var items = await httpClient.GetItemsForSearchDb();
 
