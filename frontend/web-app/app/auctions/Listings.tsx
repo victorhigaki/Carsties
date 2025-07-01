@@ -1,37 +1,48 @@
 'use client'
 
+import { useParamsStore } from "@/hooks/useParamsStore";
+import { Auction, PagedResult } from "@/types";
+import qs from "query-string";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 import { getData } from "../actions/auctionActions";
 import AppPagination from "../components/AppPagination";
 import AuctionCard from "./AuctionCard";
-import { Auction } from "@/types";
 import Filters from "./Filters";
 
 export default function Listings() {
-    const [auctions, setAuctions] = useState<Auction[]>([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
+    const [data, setData] = useState<PagedResult<Auction>>();
+    const params = useParamsStore(useShallow(state => ({
+        pageNumber: state.pageNumber,
+        pageSize: state.pageSize,
+        searchTerm: state.searchTerm
+    })));
+    const setParams = useParamsStore(state => state.setParams);
+    const url = qs.stringifyUrl({ url: '', query: params }, { skipEmptyString: true })
+
+    function setPageNumber(pageNumber: number) {
+        setParams({ pageNumber })
+    }
 
     useEffect(() => {
-        getData(pageNumber, pageSize).then(data => {
-            setAuctions(data.results);
-            setPageCount(data.pageCount);
+        getData(url).then(data => {
+            setData(data)
         })
-    }, [pageNumber, pageSize]);
+    }, [url]);
 
-    if (auctions.length === 0) return <h3>Loading...</h3>
+    if (!data) return <h3>Loading...</h3>
 
     return (
         <>
-            <Filters pageSize={pageSize} setPageSize={setPageSize} />
+            <Filters />
             <div className="grid grid-cols-4 gap-6">
-                {auctions.map(auction => (
+                {data && data.results.map(auction => (
                     <AuctionCard key={auction.id} auction={auction} />
                 ))}
             </div>
             <div className="flex justify-center">
-                <AppPagination pageChanged={setPageNumber} currentPage={pageNumber} pageCount={pageCount} />
+                <AppPagination pageChanged={setPageNumber}
+                    currentPage={params.pageNumber} pageCount={data.pageCount} />
             </div>
         </>
     )
