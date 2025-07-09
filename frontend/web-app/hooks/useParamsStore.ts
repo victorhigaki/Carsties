@@ -1,10 +1,11 @@
 import { create } from "zustand"
 
 type State = {
-    pageNumber: number
-    pageSize: number
-    pageCount: number
-    searchTerm: string
+    pageNumber: number;
+    pageSize: number;
+    pageCount: number;
+    searchTerm: string;
+    orderBy: string;
 }
 
 type Actions = {
@@ -16,7 +17,8 @@ const initialState: State = {
     pageNumber: 1,
     pageSize: 12,
     pageCount: 1,
-    searchTerm: ''
+    searchTerm: '',
+    orderBy: 'make'
 }
 
 export const useParamsStore = create<State & Actions>((set) => ({
