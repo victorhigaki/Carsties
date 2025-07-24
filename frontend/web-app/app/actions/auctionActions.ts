@@ -1,5 +1,6 @@
 'use server'
 
+import { auth } from "@/auth";
 import { Auction, PagedResult } from "@/types";
 
 export async function getData(query: string): Promise<PagedResult<Auction>> {
@@ -15,9 +16,14 @@ export async function updateAuctionTest(): Promise<{ status: number, message: st
         mileage: Math.floor(Math.random() * 10000) + 1
     }
 
+    const session = await auth();
+
     const res = await fetch(`http://localhost:6001/actions/afbee524-5972-4075-8800-7d1f9d7b0a0c`, {
         method: 'PUT',
-        headers: {},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.accessToken}`
+        },
         body: JSON.stringify(data)
     });
 
