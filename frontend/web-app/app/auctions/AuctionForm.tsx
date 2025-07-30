@@ -9,7 +9,9 @@ import { useEffect } from "react";
 export default function AuctionForm() {
     const router = useRouter();
     const { control, handleSubmit, setFocus,
-        formState: { isSubmitting, isValid, isDirty } } = useForm();
+        formState: { isSubmitting, isValid, isDirty } } = useForm({
+            mode: 'onTouched'
+        });
 
     useEffect(() => {
         setFocus('make')
@@ -25,7 +27,23 @@ export default function AuctionForm() {
                 rules={{ required: 'Make is required' }} />
             <Input name="model" label="Model" control={control}
                 rules={{ required: 'Model is required' }} />
+            <Input name="color" label="Color" control={control}
+                rules={{ required: 'Color is required' }} />
 
+            <div className="grid grid-cols-2 gap-3">
+                <Input name="year" label="Year" type="number" control={control}
+                    rules={{ required: 'Year is required' }} />
+                <Input name="mileage" label="Mileage" control={control}
+                    rules={{ required: 'Mileage is required' }} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+                <Input name="reservePrice" label="Reserve price (enter 0 if no reserve)"
+                    type="number" control={control}
+                    rules={{ required: 'Reserve price is required' }} />
+                <Input name="auctionEnd" type="date" label="Auction end date/time" control={control}
+                    rules={{ required: 'Auction end date is required' }} />
+            </div>
 
             <div className="flex justify-between">
                 <Button color='alternative' onClick={() => router.push('/')}>Cancel</Button>
