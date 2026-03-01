@@ -4,6 +4,7 @@ import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { createAuction } from "../actions/auctionActions";
 import DateInput from "../components/DateInput";
 import Input from "../components/Input";
@@ -23,12 +24,12 @@ export default function AuctionForm() {
         try {
             const res = await createAuction(data);
             if (res.error) {
-                throw new Error(res.error);
+                throw res.error;
             }
 
             router.push(`/auctions/details/${res.id}`);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            toast.error(error.status + ' ' + error.message)
         }
     }
 
