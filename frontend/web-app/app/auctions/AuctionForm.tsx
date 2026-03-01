@@ -2,10 +2,11 @@
 
 import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { FieldValues, useForm } from "react-hook-form";
-import Input from "../components/Input";
 import { useEffect } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { createAuction } from "../actions/auctionActions";
 import DateInput from "../components/DateInput";
+import Input from "../components/Input";
 
 export default function AuctionForm() {
     const router = useRouter();
@@ -18,8 +19,17 @@ export default function AuctionForm() {
         setFocus('make')
     }, [setFocus])
 
-    function onSubmit(data: FieldValues) {
-        console.log(data);
+    async function onSubmit(data: FieldValues) {
+        try {
+            const res = await createAuction(data);
+            if (res.error) {
+                throw new Error(res.error);
+            }
+
+            router.push(`/auctions/details/${res.id}`);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -38,12 +48,15 @@ export default function AuctionForm() {
                     rules={{ required: 'Mileage is required' }} />
             </div>
 
+            <Input name="imageUrl" label="Image URL" control={control}
+                rules={{ required: 'Image URL is required' }} />
+
             <div className="grid grid-cols-2 gap-3">
                 <Input name="reservePrice" label="Reserve price (enter 0 if no reserve)"
                     type="number" control={control}
                     rules={{ required: 'Reserve price is required' }} />
-                <DateInput 
-                    name="auctionEnd" 
+                <DateInput
+                    name="auctionEnd"
                     label="Auction end date/time"
                     control={control}
                     showTimeSelect
