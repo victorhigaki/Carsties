@@ -1,10 +1,10 @@
 import { getDetailedViewData } from '@/app/actions/auctionActions';
-import Heading from '@/app/components/Heading';
-import React from 'react'
-import CountdownTimer from '../../CountdownTimer';
-import CarImage from '../../CarImage';
-import DetailedSpecs from './DetailedSpecs';
 import { getCurrentUser } from '@/app/actions/authActions';
+import Heading from '@/app/components/Heading';
+import CarImage from '../../CarImage';
+import CountdownTimer from '../../CountdownTimer';
+import DeleteButton from './DeleteButton';
+import DetailedSpecs from './DetailedSpecs';
 import EditButton from './EditButton';
 
 export default async function Details({ params }: { params: Promise<{ id: string }> }) {
@@ -18,7 +18,10 @@ export default async function Details({ params }: { params: Promise<{ id: string
                 <div className='flex items-center gap-3'>
                     <Heading title={`${data.make} ${data.model}`} />
                     {user?.username === data.seller && (
-                        <EditButton id={data.id} />
+                        <>
+                            <EditButton id={data.id} />
+                            <DeleteButton id={data.id} />
+                        </>
                     )}
                 </div>
                 <div className='flex gap-3'>
