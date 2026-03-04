@@ -7,7 +7,6 @@ async function get(url: string) {
         method: 'GET',
         headers: await getHeaders()
     };
-
     const response = await fetch(baseUrl + url, requestOptions);
     return handleResponse(response);
 }
@@ -18,7 +17,6 @@ async function put(url: string, body: unknown) {
         headers: await getHeaders(),
         body: JSON.stringify(body)
     };
-
     const response = await fetch(baseUrl + url, requestOptions);
     return handleResponse(response);
 }
@@ -29,7 +27,6 @@ async function post(url: string, body: unknown) {
         headers: await getHeaders(),
         body: JSON.stringify(body)
     };
-
     const response = await fetch(baseUrl + url, requestOptions);
     return handleResponse(response);
 }
@@ -37,9 +34,8 @@ async function post(url: string, body: unknown) {
 async function del(url: string) {
     const requestOptions = {
         method: 'DELETE',
-        headers: await getHeaders(),
+        headers: await getHeaders()
     };
-
     const response = await fetch(baseUrl + url, requestOptions);
     return handleResponse(response);
 }
@@ -49,23 +45,21 @@ async function handleResponse(response: Response) {
     const data = text && JSON.parse(text);
     if (response.ok) {
         return data || response.statusText;
-    }
-    else {
+    } else {
         const error = {
             status: response.status,
             message: response.statusText
         }
-        return { error }
+        return {error}
     }
 }
 
 async function getHeaders(): Promise<Headers> {
     const session = await auth();
     const headers = new Headers();
-
-    headers.set('Context-type', 'application/json');
+    headers.set('Content-type', 'application/json');
     if (session) {
-        headers.set('Authorization', 'Bearer ' + session.accessToken);
+        headers.set('Authorization', 'Bearer ' + session.accessToken)
     }
     return headers;
 }

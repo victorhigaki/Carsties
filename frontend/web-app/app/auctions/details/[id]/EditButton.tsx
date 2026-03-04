@@ -1,14 +1,14 @@
-import { Button } from "flowbite-react"
-import Link from "next/link"
+import { Button } from "flowbite-react";
+import Link from "next/link";
 
 type Props = {
-    id: string
+    id: string;
 }
 
-export default function EditButton({ id }: Props) {
-    return (
-        <Button outline>
-            <Link href={`/auctions/update/${id}`}>Update Auction</Link>
-        </Button>
-    )
+export default function EditButton({id}: Props) {
+  return (
+    <Button outline>
+        <Link href={`/auctions/update/${id}`}>Update Auction</Link>
+    </Button>
+  )
 }

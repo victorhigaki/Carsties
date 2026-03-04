@@ -12,9 +12,11 @@ export default function Input(props: Props) {
 
     return (
         <div className="mb-3 block">
-            {props.showLabel && (<div className="mb-2 block">
-                <Label htmlFor={field.name}>{props.label}</Label>
-            </div>)}
+            {props.showLabel && (
+                <div className="mb-2 block">
+                    <Label htmlFor={field.name}>{props.label}</Label>
+                </div>
+            )}
             <TextInput
                 {...props}
                 {...field}

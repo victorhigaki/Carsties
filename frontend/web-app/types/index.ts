@@ -21,4 +21,5 @@ export type Auction = {
     mileage: number
     imageUrl: string
     id: string
-}
+  }
+  

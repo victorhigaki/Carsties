@@ -1,12 +1,12 @@
 'use client';
 
-import { Auction } from "@/types";
-import { Table, TableBody, TableCell, TableRow } from "flowbite-react";
+import {Auction} from "@/types";
+import {Table, TableBody, TableCell, TableRow} from "flowbite-react";
 
 type Props = {
     auction: Auction
 }
-export default function DetailedSpecs({ auction }: Props) {
+export default function DetailedSpecs({auction}: Props) {
     return (
         <Table striped={true}>
             <TableBody className="divide-y">

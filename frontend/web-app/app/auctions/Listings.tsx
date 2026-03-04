@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { useParamsStore } from "@/hooks/useParamsStore";
-import { Auction, PagedResult } from "@/types";
-import qs from "query-string";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
-import { getData } from "../actions/auctionActions";
-import AppPagination from "../components/AppPagination";
 import AuctionCard from "./AuctionCard";
+import AppPagination from "../components/AppPagination";
+import { getData } from "../actions/auctionActions";
+import { useEffect, useState } from "react";
+import { Auction, PagedResult } from "@/types";
 import Filters from "./Filters";
+import { useParamsStore } from "@/hooks/useParamsStore";
+import { useShallow } from "zustand/shallow";
+import qs from "query-string";
 import EmptyFilter from "../components/EmptyFilter";
 
 export default function Listings() {
@@ -49,12 +49,14 @@ export default function Listings() {
                             <AuctionCard key={auction.id} auction={auction} />
                         ))}
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex justify-center mt-4">
                         <AppPagination pageChanged={setPageNumber}
                             currentPage={params.pageNumber} pageCount={data.pageCount} />
                     </div>
                 </>
             )}
+
         </>
+
     )
 }
