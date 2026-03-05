@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MassTransit.RabbitMQ" Version="9.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.13" />
-    <PackageReference Include="MongoDB.Entities" Version="25.0.0" />
+    <PackageReference Include="MongoDB.Entities" Version="24.1.1" />
   </ItemGroup>
 
 
