@@ -1,6 +1,8 @@
 using AutoMapper;
 using BiddingService.DTOs;
 using BiddingService.Models;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
@@ -12,10 +14,13 @@ namespace BiddingService.Controllers;
 public class BidsController : ControllerBase
 {
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public BidsController(IMapper mapper)
+    public BidsController(IMapper mapper,
+        IPublishEndpoint publishEndpoint)
     {
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
     [Authorize]
@@ -26,7 +31,6 @@ public class BidsController : ControllerBase
 
         if (auction == null)
         {
-            // TODO: check with auction service if that has auction
             return NotFound("Auction not found.");
         }
 
@@ -35,11 +39,11 @@ public class BidsController : ControllerBase
             return BadRequest("You cannot bid on your own auction.");
         }
 
-        var bid = new Bid
+        var bid = new Bid()
         {
             Amount = amount,
             AuctionId = auctionId,
-            Bidder = User.Identity.Name,
+            Bidder = User.Identity.Name
         };
 
         if (auction.AuctionEnd < DateTime.UtcNow)
@@ -55,7 +59,7 @@ public class BidsController : ControllerBase
 
             if (highBid != null && amount > highBid.Amount || highBid == null)
             {
-                bid.BidStatus = amount >= auction.ReservePrice
+                bid.BidStatus = amount > auction.ReservePrice
                     ? BidStatus.Accepted
                     : BidStatus.AcceptedBelowReserve;
             }
@@ -67,6 +71,8 @@ public class BidsController : ControllerBase
         }
 
         await DB.SaveAsync(bid);
+
+        await _publishEndpoint.Publish(_mapper.Map<BidPlaced>(bid));
 
         return Ok(_mapper.Map<BidDto>(bid));
     }
