@@ -11,7 +11,7 @@ RUN dotnet restore src/GatewayService/GatewayService.csproj
 
 # Copy everything else and build
 COPY . .
-WORKDIR /src/src/GatewayService
+WORKDIR ./src/GatewayService
 RUN dotnet publish -c Release -o /app/publish
 
 # Build runtime image
