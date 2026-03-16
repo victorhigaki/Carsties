@@ -1,62 +1,78 @@
-'use client';
+"use client";
 
-import AuctionCard from "./AuctionCard";
-import AppPagination from "../components/AppPagination";
-import { getData } from "../actions/auctionActions";
-import { useEffect, useState } from "react";
-import { Auction, PagedResult } from "@/types";
-import Filters from "./Filters";
+import { useAuctionStore } from "@/hooks/useAuctionStore";
 import { useParamsStore } from "@/hooks/useParamsStore";
-import { useShallow } from "zustand/shallow";
 import qs from "query-string";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
+import { getData } from "../actions/auctionActions";
+import AppPagination from "../components/AppPagination";
 import EmptyFilter from "../components/EmptyFilter";
+import AuctionCard from "./AuctionCard";
+import Filters from "./Filters";
 
 export default function Listings() {
-    const [data, setData] = useState<PagedResult<Auction>>();
-    const params = useParamsStore(useShallow(state => ({
-        pageNumber: state.pageNumber,
-        pageSize: state.pageSize,
-        searchTerm: state.searchTerm,
-        orderBy: state.orderBy,
-        filterBy: state.filterBy,
-        seller: state.seller,
-        winner: state.winner
-    })));
-    const setParams = useParamsStore(state => state.setParams);
-    const url = qs.stringifyUrl({ url: '', query: params }, { skipEmptyString: true })
+  const [loading, setLoading] = useState(true);
+  const params = useParamsStore(
+    useShallow((state) => ({
+      pageNumber: state.pageNumber,
+      pageSize: state.pageSize,
+      searchTerm: state.searchTerm,
+      orderBy: state.orderBy,
+      filterBy: state.filterBy,
+      seller: state.seller,
+      winner: state.winner,
+    })),
+  );
+  const data = useAuctionStore(
+    useShallow((state) => ({
+      auctions: state.auctions,
+      totalCount: state.totalCount,
+      pageCount: state.PageCount,
+    })),
+  );
+  const setData = useAuctionStore((state) => state.setData);
+  const setParams = useParamsStore((state) => state.setParams);
+  const url = qs.stringifyUrl(
+    { url: "", query: params },
+    { skipEmptyString: true },
+  );
 
-    function setPageNumber(pageNumber: number) {
-        setParams({ pageNumber })
-    }
+  function setPageNumber(pageNumber: number) {
+    setParams({ pageNumber });
+  }
 
-    useEffect(() => {
-        getData(url).then(data => {
-            setData(data)
-        })
-    }, [url]);
+  useEffect(() => {
+    getData(url).then((data) => {
+      setData(data);
+      setLoading(false);
+    });
+  }, [url, setData]);
 
-    if (!data) return <h3>Loading...</h3>
+  if (loading) return <h3>Loading...</h3>;
 
-    return (
+  return (
+    <>
+      <Filters />
+      {data.totalCount === 0 ? (
+        <EmptyFilter showReset />
+      ) : (
         <>
-            <Filters />
-            {data.totalCount === 0 ? (
-                <EmptyFilter showReset />
-            ) : (
-                <>
-                    <div className="grid grid-cols-4 gap-6">
-                        {data && data.results.map(auction => (
-                            <AuctionCard key={auction.id} auction={auction} />
-                        ))}
-                    </div>
-                    <div className="flex justify-center mt-4">
-                        <AppPagination pageChanged={setPageNumber}
-                            currentPage={params.pageNumber} pageCount={data.pageCount} />
-                    </div>
-                </>
-            )}
-
+          <div className="grid grid-cols-4 gap-6">
+            {data &&
+              data.auctions.map((auction) => (
+                <AuctionCard key={auction.id} auction={auction} />
+              ))}
+          </div>
+          <div className="flex justify-center mt-4">
+            <AppPagination
+              pageChanged={setPageNumber}
+              currentPage={params.pageNumber}
+              pageCount={data.pageCount}
+            />
+          </div>
         </>
-
-    )
+      )}
+    </>
+  );
 }
